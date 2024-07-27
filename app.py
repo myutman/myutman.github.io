@@ -2,5 +2,5 @@ import sys
 import justpy as jp
 from src.algorithm.vizualization import make_table
 
-port = int(sys.argv[1])
-jp.justpy(make_table, host="localhost", port=port)
+jp.justpy(make_table, host="localhost", start_server=False)
+app = jp.app
