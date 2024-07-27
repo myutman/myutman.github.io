@@ -1,1 +1,1 @@
-web: python3 -m app $PORT
+web: python3 -m app $PORT $HOST
