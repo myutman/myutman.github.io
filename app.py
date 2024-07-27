@@ -1,4 +1,6 @@
+import sys
 import justpy as jp
 from src.algorithm.vizualization import make_table
 
-jp.justpy(make_table, port=5471)
+port = int(sys.args[1])
+jp.justpy(make_table, port=port)
