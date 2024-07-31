@@ -143,7 +143,9 @@ async function loadEvents(event) {
         }
         console.log(click_event);
 
-        events.push(click_event);
+        if (new Date(click_event.date).toLocaleDateString('en-US') == getUTCDate()) {
+            events.push(click_event);
+        }
 
         cursor.continue();
         return;
