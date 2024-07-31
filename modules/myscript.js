@@ -212,8 +212,8 @@ async function loadState(event) {
     drawFullCanvas();
 }
 
-const BACKEND_URL = "http://backend.com:5432";
-// const BACKEND_URL = "https://cave-puzzle-3f21cce9636b.herokuapp.com";
+// const BACKEND_URL = "http://backend.com:5432";
+const BACKEND_URL = "https://cave-puzzle-3f21cce9636b.herokuapp.com";
 
 async function genField(N) {
     const field = await fetch(BACKEND_URL + `/gen-cave?field_size=${N}`, {
