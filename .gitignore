@@ -1,0 +1,7 @@
+node_modules
+assets/background/*/
+assets/buttons/*/
+!assets/buttons/TXT
+assets/tiles/*/
+assets/.DS_STORE
+.DS_STORE
