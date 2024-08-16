@@ -83,6 +83,8 @@ export class DB {
     }
 
     async newClickEvent(i, j) {
+        this.field_color[i][j] += 1;
+        this.field_color[i][j] %= 3;
         this.putEventToStorage({x: j, y: i});
     }
 
