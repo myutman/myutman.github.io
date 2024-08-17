@@ -46,10 +46,16 @@ export class GameScene extends Phaser.Scene {
         });
     }
 
-    async checkSolved() {
+    checkSolved() {
         console.log(this.db.field);
         console.log(this.db.field_color);
-        let isSolved = await checkSolved(this.db.field, this.db.field_color);
-        console.log(`Solved = ${isSolved}`);
+        checkSolved(this.db.field, this.db.field_color)
+            .then((isSolved) => {
+                if (isSolved) {
+                    this.scene.start('WinScene', { db: this.db });
+                } else {
+                    this.scene.start('LoseScene', { db: this.db });
+                }
+            })
     }
 }

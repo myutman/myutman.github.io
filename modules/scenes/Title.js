@@ -68,8 +68,8 @@ export class Title extends Phaser.Scene {
     }
 
     async startNewGame() {
-        await this.db.newGame();
-        this.scene.start('GameScene', { db: this.db });
+        this.db.newGame();
+        this.scene.start('WaitingCreationScene', { db: this.db });
     }
 
     async loadGame() {
