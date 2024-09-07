@@ -1,3 +1,10 @@
+const ASSET_SIZE = 60
+const CLICKABLE_HEIGHT = 12
+const CLICKABLE_WIDTH = 40
+const BORDER_SIZE_Y = 4
+const BORDER_SIZE_X = 3
+const SHADE_SIZE = 4
+
 export class ButtonComponent extends Phaser.GameObjects.Container {
     constructor(config) {
         super(config.scene);
@@ -8,10 +15,6 @@ export class ButtonComponent extends Phaser.GameObjects.Container {
 
         this.x = this.config.x;
         this.y = this.config.y;
-        this.offsetX = this.config.offsetX;
-        this.centerShiftX = this.config.centerShiftX;
-        this.centerShiftY = this.config.centerShiftY;
-        this.width = this.config.width;
         this.height = this.config.height;
         this.label = this.config.label;
 
@@ -19,30 +22,49 @@ export class ButtonComponent extends Phaser.GameObjects.Container {
         console.log(`height=${this.height}, width=${this.width}`);
         console.log(`bg height=${this.background.height}, bg width=${this.background.width}`);
         console.log(`scale=${this.width / this.background.width}`);
-        this.background.setScale(this.width / this.background.width, this.height / this.background.height);
+
+        this.clickArea = this.scene.add.rectangle(0, 0, this.height, this.height, "#ff0000");
+        // this.clickArea.setX(this.clickArea.x - (0.5 * BORDER_SIZE / ASSET_SIZE) * this.height)
+        // this.clickArea.setY(this.clickArea.y + (0.5 * BORDER_SIZE / ASSET_SIZE) * this.height)
+
+        // this.clickArea = new Rectangle(this.scene, 0, 0, this.width, this.height / 4, "#ff0000")
 
         console.log(this.type);
         this.text = this.scene.add.text(0, 0, this.label, {
             fontSize: 50,
             fill: "#ffd76b",
-            fontStyle: 'bold'
+            fontStyle: 'bold',
+            align: 'center'
         });
         this.text.setOrigin(0.5, 0.5);
 
-        this.text.setScale(0.125 * this.height / this.text.height);
+        let textVerticalSpace = 0.7
 
-        this.text.x += this.centerShiftX;
-        this.text.y += this.centerShiftY;
+        this.horizontalScale = ((CLICKABLE_WIDTH + 4) / CLICKABLE_WIDTH) * (this.text.width / this.text.height) * textVerticalSpace;
+        
+        this.text.setScale(textVerticalSpace * this.height / this.text.height);
+        this.background.setScale(this.horizontalScale * (ASSET_SIZE / CLICKABLE_WIDTH) * this.height / this.background.width, (ASSET_SIZE / CLICKABLE_HEIGHT) * this.height / this.background.height);
+        this.clickArea.setScale(this.horizontalScale, 1);
 
-        // 
-        // this.text.x += this.text.scale * 0.5 * this.text.width;
-        // this.text.setY(10 - 0.5 * this.text.height);
-        this.background.setInteractive();
 
-        this.background.on('pointerdown', this.onPush, this);
-        this.background.on('pointerup', this.onPull, this);
-        this.background.on('pointerout', this.onOut, this);
 
+        let offsetX = (this.height * this.horizontalScale) * (0.5 * SHADE_SIZE / CLICKABLE_WIDTH);
+        let offsetY = this.height * (0.5 * SHADE_SIZE / CLICKABLE_HEIGHT);
+
+        this.text.x -= offsetX;
+        this.text.y += offsetY;
+
+        this.clickArea.x -= offsetX;
+        this.clickArea.y += offsetY;
+
+
+        this.clickArea.setInteractive();
+
+        this.clickArea.on('pointerdown', this.onPush, this);
+        this.clickArea.on('pointerup', this.onPull, this);
+        this.clickArea.on('pointerout', this.onOut, this);
+
+        this.add(this.clickArea);
         this.add(this.background);
         this.add(this.text);
         this.scene.add.existing(this);

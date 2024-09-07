@@ -32,15 +32,14 @@ export class WinScene extends Phaser.Scene {
             ease: 'Bounce.out'
         });
 
+        let button_height = 40;
         const button = new ButtonComponent({
             scene: this,
             x: 400, y: 400,
-            height: 200, width: 200,
-            offsetX: 10, offsetY: 10,
-            centerShiftX: -5, centerShiftY: 5,
+            height: button_height,
             background: 'button',
             onPush: this.startNewGame.bind(this),
-            label: "Start New Game"
+            label: "New Game"
         });
     }
 

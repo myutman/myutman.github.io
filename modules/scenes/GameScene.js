@@ -33,13 +33,12 @@ export class GameScene extends Phaser.Scene {
             db: this.db
         });
 
+        let button_height = 30;
         const checkButton = new ButtonComponent({
             scene: this,
-            x: 800 - 75,
+            x: 800 - 85,
             y: 300,
-            height: 150, width: 150,
-            offsetX: 10, offsetY: 10,
-            centerShiftX: -1.25, centerShiftY: 1.25,
+            height: button_height,
             background: 'button',
             onPush: this.checkSolved.bind(this),
             label: "Solved?"

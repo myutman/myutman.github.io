@@ -32,13 +32,14 @@ export class Title extends Phaser.Scene {
             ease: 'Bounce.out'
         });
 
+
+        let button_height = 40;
+
         if (!this.game_loaded) {
             const button = new ButtonComponent({
                 scene: this,
                 x: 400, y: 400,
-                height: 200, width: 200,
-                offsetX: 10, offsetY: 10,
-                centerShiftX: -5, centerShiftY: 5,
+                height: button_height,
                 background: 'button',
                 onPush: this.startNewGame.bind(this),
                 label: "New Game"
@@ -47,9 +48,7 @@ export class Title extends Phaser.Scene {
             const button1 = new ButtonComponent({
                 scene: this,
                 x: 200, y: 400,
-                height: 200, width: 200,
-                offsetX: 10, offsetY: 10,
-                centerShiftX: -5, centerShiftY: 5,
+                height: button_height,
                 background: 'button',
                 onPush: this.startNewGame.bind(this),
                 label: "New Game"
@@ -57,9 +56,7 @@ export class Title extends Phaser.Scene {
             const button2 = new ButtonComponent({
                 scene: this,
                 x: 600, y: 400,
-                height: 200, width: 200,
-                offsetX: 10, offsetY: 10,
-                centerShiftX: -5, centerShiftY: 5,
+                height: button_height,
                 background: 'button',
                 onPush: this.loadGame.bind(this),
                 label: "Continue"
