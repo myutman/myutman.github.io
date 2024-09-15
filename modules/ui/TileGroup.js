@@ -48,16 +48,28 @@ class Tile extends Phaser.GameObjects.Container {
         this.scene.add.existing(this);
     }
 
+    change(direction) {
+        let add = undefined;
+        if (direction == "backward") {
+            add = 2;
+        } else if (direction == "forward") {
+            add = 1;
+        } else {
+            throw new Error(`Unsupported direction ${direction}`);
+        }
+        let typeNumber = tileTypes.findIndex((val, _1, _2) => {
+            console.log(`${this.type} =? ${val}`);
+            return this.type === val;
+        });
+        console.log("Found ${typeNumber}");
+        typeNumber = (typeNumber + add) % 3;
+        this.setType(tileTypes[typeNumber]);
+    }
+
     onPush() {
         console.log(`Numbered? ${this.numbered}`);
         if (!this.numbered) {
-            let typeNumber = tileTypes.findIndex((val, _1, _2) => {
-                console.log(`${this.type} =? ${val}`);
-                return this.type === val;
-            });
-            console.log("Found ${typeNumber}");
-            typeNumber = (typeNumber + 1) % 3;
-            this.setType(tileTypes[typeNumber]);
+            this.change("forward");
             console.log(`Setting tile ${this.i}, ${this.j} type to ${this.type}`);
             this.db.newClickEvent(this.i, this.j);
         }
@@ -154,6 +166,12 @@ export class TileGroup extends Phaser.GameObjects.Container {
         }
 
         this.scene.add.existing(this);
+    }
+
+    changeTile(x, y, direction) {
+        console.log(`${x} ${y} ${direction}`);
+        console.log(this.tiles[y][x]);
+        this.tiles[y][x].change(direction);
     }
 
     destroy(fromScene) {

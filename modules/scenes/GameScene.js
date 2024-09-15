@@ -15,6 +15,7 @@ export class GameScene extends Phaser.Scene {
         console.log("In game init");
         console.log(this.db.field);
         console.log(this.db.field_color);
+        this.tileGroup = undefined;
     }
 
     create() {
@@ -24,7 +25,7 @@ export class GameScene extends Phaser.Scene {
         background.setOrigin(0, 0);
         background.setScale(800 / background.width, 600 / background.height);
 
-        const tile_group = new TileGroup({
+        this.tileGroup = new TileGroup({
             scene: this,
             N: 10,
             offsetY: 20,
@@ -43,6 +44,16 @@ export class GameScene extends Phaser.Scene {
             onPush: this.checkSolved.bind(this),
             label: "Solved?"
         });
+
+        const undoButton = new ButtonComponent({
+            scene: this,
+            x: 800 - 85,
+            y: 370,
+            height: button_height,
+            background: 'button',
+            onPush: this.undo.bind(this),
+            label: "Undo"
+        })
     }
 
     checkSolved() {
@@ -56,5 +67,14 @@ export class GameScene extends Phaser.Scene {
                     this.scene.start('LoseScene', { db: this.db });
                 }
             })
+    }
+
+    async undo() {
+        let event = await this.db.newUndoEvent();
+        console.log(`Undo event: ${event}`);
+        if (event !== undefined) {
+            console.log(`Undo event: x=${event.x}, y = ${event.y}`);
+            this.tileGroup.changeTile(event.x, event.y, "backward");
+        }
     }
 }

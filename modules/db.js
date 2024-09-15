@@ -9,6 +9,11 @@ function getUTCDateMilliseconds() {
 const DATABASE_NAME = "MyDB"
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
+const EEventType = {
+    CLICK: "click",
+    UNDO: "undo"
+};
+
 export class DB {
     constructor(N) {
         this.N = N;
@@ -76,10 +81,11 @@ export class DB {
         };
     }
 
-    async putEventToStorage(state) {
+    async putEventToStorage(gameEvent) {
+        console.log(`Putting event ${gameEvent} to storage`);
         await this.awaitConsistency();
         this.dbConsistent = false;
-        state.date = getUTCDateMilliseconds();
+        gameEvent.date = getUTCDateMilliseconds();
         const request = indexedDB.open(DATABASE_NAME, 3);
         request.onerror = (event) => {
             console.log(event.type)
@@ -87,7 +93,7 @@ export class DB {
         request.onsuccess = (event) => {
             const db = event.target.result;
             const objectStore = db.transaction("events", "readwrite").objectStore("events");
-            objectStore.add(state);
+            objectStore.add(gameEvent);
             this.dbConsistent = true;
         };
     }
@@ -95,19 +101,38 @@ export class DB {
     async newClickEvent(i, j) {
         this.field_color[i][j] += 1;
         this.field_color[i][j] %= 3;
-        this.putEventToStorage({x: j, y: i});
+        let event = {type: EEventType.CLICK, x: j, y: i};
+        this.events.push(event);
+        console.log(EEventType.CLICK);
+        this.putEventToStorage(event);
+    }
+
+    async newUndoEvent() {
+        console.log(`Events: ${this.events}`);
+        if (this.events.length > 0) {
+            let event = this.events.pop();
+            this.field_color[event.y][event.x] += 2;
+            this.field_color[event.y][event.x] %= 3;
+            this.putEventToStorage({type: EEventType.UNDO});
+            return event;
+        }
+        return undefined;
     }
 
     async loadEvents(event) {
         console.log("Starting loading events");
         const cursor = event.target.result;
         if (cursor) {
-            let click_event = cursor.value;
-            if (click_event === undefined) {
+            let gameEvent = cursor.value;
+            if (gameEvent === undefined) {
                 return;
             }
-            console.log(click_event);
-            this.events.push(click_event);
+            console.log(gameEvent);
+            if (gameEvent.type == EEventType.UNDO) {
+                this.events.pop();
+            } else {
+                this.events.push(gameEvent);
+            }
 
             cursor.continue();
             return;
@@ -198,7 +223,7 @@ export class DB {
 
             console.log("Started reading events");
             var objectStore1 = db.transaction("events", "readwrite").objectStore("events");
-            const openCursor1 = objectStore1.openCursor(null, "prev");
+            const openCursor1 = objectStore1.openCursor(null, "next");
             openCursor1.onerror = (event) => {
                 console.log(event.type);
             }
@@ -270,6 +295,7 @@ export class DB {
     async newGame() {
         await this.resetDB();
         this.field = await genField(this.N);
+        this.events = new Array();
         this.putStateToStorage(this.field);
         for (let i = 0; i < this.N; i++) {
             for (let j = 0; j < this.N; j++) {
