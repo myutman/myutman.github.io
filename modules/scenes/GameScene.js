@@ -1,6 +1,6 @@
 import { ButtonComponent } from "/modules/ui/ButtonComponent.js";
 import { TileGroup } from "/modules/ui/TileGroup.js";
-import { checkSolved } from "/modules/network.js";
+import { checkSolved } from "/modules/algorithm.js";
 
 export class GameScene extends Phaser.Scene {
     constructor() {
@@ -59,14 +59,12 @@ export class GameScene extends Phaser.Scene {
     checkSolved() {
         console.log(this.db.field);
         console.log(this.db.field_color);
-        checkSolved(this.db.field, this.db.field_color)
-            .then((isSolved) => {
-                if (isSolved) {
-                    this.scene.start('WinScene', { db: this.db });
-                } else {
-                    this.scene.start('LoseScene', { db: this.db });
-                }
-            })
+        const isSolved = checkSolved(this.db.field, this.db.field_color);
+        if (isSolved) {
+            this.scene.start('WinScene', { db: this.db });
+        } else {
+            this.scene.start('LoseScene', { db: this.db });
+        }
     }
 
     async undo() {

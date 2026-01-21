@@ -1,4 +1,4 @@
-import { genField } from "/modules/network.js";
+import { genField } from "/modules/algorithm.js";
 
 function getUTCDateMilliseconds() {
     let date = new Date();
@@ -294,7 +294,7 @@ export class DB {
 
     async newGame() {
         await this.resetDB();
-        this.field = await genField(this.N);
+        this.field = genField(this.N);
         this.events = new Array();
         this.putStateToStorage(this.field);
         for (let i = 0; i < this.N; i++) {
